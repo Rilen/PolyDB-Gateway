@@ -38,6 +38,7 @@ B --> L[Metrics Collector]
 
 L --> M[Prometheus]
 M --> N[Grafana]
+```
 
 ## Documentation
 
