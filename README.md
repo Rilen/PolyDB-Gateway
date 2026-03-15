@@ -1,5 +1,10 @@
 # PolyDB Gateway
 
+![Python](https://img.shields.io/badge/python-backend-blue)
+![PostgreSQL](https://img.shields.io/badge/postgres-database-blue)
+![MySQL](https://img.shields.io/badge/mysql-database-orange)
+![API](https://img.shields.io/badge/API-gateway-green)
+
 PolyDB Gateway is an API layer designed to provide unified access to multiple databases while offering monitoring, connection management and standardized JSON responses.
 
 ## Features
@@ -12,7 +17,27 @@ PolyDB Gateway is an API layer designed to provide unified access to multiple da
 
 ## Architecture
 
-![Architecture](docs/architecture.png)
+```mermaid
+flowchart LR
+
+A[Client Applications] --> B[PolyDB Gateway API]
+
+B --> C[Auth Layer]
+B --> D[Connection Manager]
+B --> E[Query Engine]
+
+D --> F[(MySQL Cluster)]
+D --> G[(PostgreSQL Cluster)]
+D --> H[(SQLite)]
+
+E --> I[Query Validator]
+E --> J[Execution Engine]
+E --> K[JSON Formatter]
+
+B --> L[Metrics Collector]
+
+L --> M[Prometheus]
+M --> N[Grafana]
 
 ## Documentation
 
