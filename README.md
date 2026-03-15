@@ -23,6 +23,17 @@ O **PolyDB Gateway** é uma solução de infraestrutura leve desenvolvida para s
 
 ---
 
+## 🔄 Rotina e Papel do Especialista de Dados
+
+Neste projeto, o **Cientista/Engenheiro de Dados** atua como o arquiteto da informação. O seu trabalho rotineiro utilizando o PolyDB Gateway envolve:
+
+1.  **Governança de Dados:** Definir no arquivo `databases.yaml` quais fontes de dados a empresa pode acessar com segurança.
+2.  **Monitoramento de Performance:** Usar o **Grafana** para identificar queries lentas (gargalos) que podem estar afetando a produção.
+3.  **Sanitização de Consultas:** Garantir que o Gateway esteja entregando JSONs limpos para que o **Programador** não precise tratar tipos de dados complexos de bancos antigos.
+4.  **Escalabilidade:** Configurar novos clusters e conectá-los ao Gateway sem que a aplicação final precise mudar uma única linha de código.
+
+---
+
 ## 🏗️ Arquitetura do Sistema
 
 ```mermaid
@@ -90,18 +101,27 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-### 2. Semear Banco de Dados Local (Demo)
+### 2. Subir Infraestrutura (Docker)
 ```powershell
-python scripts/seed_db.py
+# Inicia containers de Postgres, MySQL, Prometheus e Grafana
+docker compose -f docker/docker-compose.yml up -d
 ```
 
-### 3. Executar o Gateway
+### 3. Popular Ecossistema de Dados
+```powershell
+# Gera dados ricos em todos os bancos para apresentação
+python scripts/seed_presentation.py
+```
+
+### 4. Executar o Gateway
 ```powershell
 python api/gateway.py
 ```
 
-### 4. Consultar a API
-Acesse a documentação interativa em: [http://localhost:8000/docs](http://localhost:8000/docs)
+### 5. Dashboards & API
+- **API Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Métricas Brutas (Prometheus):** [http://localhost:9090](http://localhost:9090)
+- **Visualização (Grafana):** [http://localhost:3000](http://localhost:3000) (Login: admin/admin)
 
 ---
 

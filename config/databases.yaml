@@ -6,6 +6,7 @@ databases:
     database: analytics
     user: admin
     password: password
+    display_name: "PostgreSQL Production"
 
   mysql_inventory:
     type: mysql
@@ -14,7 +15,9 @@ databases:
     database: inventory
     user: user
     password: password
+    display_name: "MySQL Inventory"
 
   local_sqlite:
     type: sqlite
     path: ./data/local.db
+    display_name: "SQLite Local Cache"

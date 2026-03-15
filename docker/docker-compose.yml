@@ -1,18 +1,6 @@
 version: '3.8'
 
 services:
-  gateway:
-    build: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    environment:
-      - CONFIG_PATH=/app/config/databases.yaml
-    depends_on:
-      - db_postgres
-      - db_mysql
-
   db_postgres:
     image: postgres:15
     environment:
@@ -35,7 +23,7 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
-      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
 
@@ -43,5 +31,7 @@ services:
     image: grafana/grafana
     ports:
       - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
