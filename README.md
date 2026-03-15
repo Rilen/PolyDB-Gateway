@@ -27,30 +27,41 @@ O **PolyDB Gateway** é uma solução de infraestrutura leve desenvolvida para s
 
 ```mermaid
 flowchart TD
-    subgraph Clients
+    subgraph Users ["Gestão & Operação"]
+        Admin[Programador / Analista]
+    end
+
+    subgraph Clients ["Consumidores"]
         App1[Aplicações Mobile]
         App2[Dashboards Web]
     end
 
-    subgraph "PolyDB Gateway"
+    subgraph Gateway ["PolyDB Gateway Instance"]
         API[FastAPI Gateway]
+        Config[Configuração YAML]
         Auth[Camada de Autenticação]
         ConnMgr[Gerenciador de Conexões]
         Engine[Engine de Query]
         Metrics[Coletor de Métricas]
     end
 
-    subgraph "Data Layer"
+    subgraph Data ["Data Layer"]
         PG[(PostgreSQL)]
         MY[(MySQL)]
         SQ[(SQLite Local)]
     end
 
-    subgraph Monitoring
+    subgraph Observability ["Stack de Observabilidade"]
         PR[Prometheus]
         GR[Grafana]
     end
 
+    %% Fluxo de Gestão
+    Admin -- "Gerencia" --> Config
+    Config -- "Alimenta" --> API
+    Admin -- "Monitora" --> GR
+
+    %% Fluxo de Dados
     Clients --> API
     API --> Auth
     Auth --> ConnMgr
@@ -58,6 +69,8 @@ flowchart TD
     Engine --> PG
     Engine --> MY
     Engine --> SQ
+    
+    %% Fluxo de Métricas
     API --> Metrics
     Metrics --> PR
     PR --> GR
