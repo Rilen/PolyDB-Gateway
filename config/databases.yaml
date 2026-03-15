@@ -1,1 +1,20 @@
+databases:
+  postgres_prod:
+    type: postgres
+    host: localhost
+    port: 5432
+    database: analytics
+    user: admin
+    password: password
 
+  mysql_inventory:
+    type: mysql
+    host: localhost
+    port: 3306
+    database: inventory
+    user: user
+    password: password
+
+  local_sqlite:
+    type: sqlite
+    path: ./data/local.db
