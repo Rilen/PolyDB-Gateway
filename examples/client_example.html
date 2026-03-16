@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>PolyDB Gateway - Demo Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; color: #333; padding: 40px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #005571; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .card { background: #eef2f3; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #005571; }
+        button { background: #005571; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #003d52; }
+        pre { background: #2d2d2d; color: #ccc; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .status { font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 PolyDB Gateway</h1>
+    <p>Demonstração de consumo de API via <strong>HTML5 + JavaScript</strong>.</p>
+    
+    <div class="card">
+        <h3>Consulta: Top Vendas (PostgreSQL)</h3>
+        <p>Este dado está vindo direto do banco rodando no Docker, sem recarregar a página!</p>
+        <button onclick="buscarDados()">Executar Query JSON</button>
+    </div>
+
+    <div id="resultado-area" style="display:none;">
+        <p class="status">✅ Resposta do Gateway (JSON):</p>
+        <pre id="json-output"></pre>
+    </div>
+</div>
+
+<script>
+    async function buscarDados() {
+        const outputArea = document.getElementById('resultado-area');
+        const jsonPre = document.getElementById('json-output');
+        
+        try {
+            const response = await fetch('http://localhost:8000/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    database: "postgres_prod",
+                    query: "SELECT product, amount FROM sales LIMIT 3"
+                })
+            });
+            
+            const data = await response.json();
+            jsonPre.textContent = JSON.stringify(data, null, 2);
+            outputArea.style.display = 'block';
+        } catch (error) {
+            alert('Erro ao conectar no Gateway. Verifique se o comando python api/gateway.py está rodando!');
+        }
+    }
+</script>
+
+</body>
+</html>

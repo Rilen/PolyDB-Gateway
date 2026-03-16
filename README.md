@@ -13,13 +13,22 @@
 
 ## 📋 Visão Geral
 
-O **PolyDB Gateway** é uma solução de infraestrutura leve desenvolvida para simplificar a interação entre aplicações e diversos ecossistemas de bancos de dados relacionais. Ele centraliza a gestão de conexões, padroniza as respostas em JSON e fornece uma camada de métricas pronta para monitoramento (Prometheus/Grafana).
+O **PolyDB Gateway** transforma bancos de dados complexos em componentes **"Plug and Play"**. Através de uma camada de abstração, ele permite que programadores consumam dados sem se preocupar com a infraestrutura, credenciais ou drivers específicos.
+
+Isso é o que chamamos de **"Data-as-a-Service"** (Dados como Serviço) 🚀.
 
 ### ✨ Diferenciais
 - **Acesso Unificado:** Uma única API para consultar PostgreSQL, MySQL e SQLite.
-- **Observabilidade:** Coleta distribuída de latência de query, erros e conexões ativas.
-- **Interface Padronizada:** Respostas JSON consistentes, independente do dialeto SQL do banco de dados.
-- **Pronto para Cloud:** Estrutura conteinerizada ideal para deploys em Cloud Run ou Kubernetes.
+- **Observabilidade:** Coleta distribuída de latência de query, erros e conexões ativas via Prometheus/Grafana.
+- **Interface Padronizada:** Respostas JSON consistentes, facilitando o consumo por diversas tecnologias.
+- **Desacoplamento:** Separação clara entre a Camada de Dados, o Gateway (API) e os Consumidores (Apps).
+
+### 👥 Consumidores Suportados
+O Gateway foi projetado para ser agnóstico, permitindo o consumo por:
+- **Web (HTML5/JS):** Dashboards interativos via `fetch` API.
+- **Backend Legado (PHP):** Integração simples via `cURL`.
+- **Scripts de Ciência de Dados (Python):** Automações robustas com a biblioteca `requests`.
+- **Aplicações Mobile:** Consumo via requisições HTTP padrão.
 
 ---
 
