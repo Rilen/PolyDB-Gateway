@@ -1,0 +1,1 @@
+rtl        21627  0.0  0.0 231436  2524 pts/7    S+   20:50   0:00 grep --color=auto uvicorn

@@ -35,3 +35,23 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
+
+  directus:
+    image: directus/directus:latest
+    ports:
+      - "8055:8055"
+    environment:
+      KEY: "polydb-gateway-key-2026"
+      SECRET: "polydb-gateway-secret-2026"
+      DB_CLIENT: "pg"
+      DB_HOST: "db_postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: "analytics"
+      DB_USER: "admin"
+      DB_PASSWORD: "password"
+      ADMIN_EMAIL: "admin@example.com"
+      ADMIN_PASSWORD: "admin"
+      # Enable public access for demo purposes if needed
+      PUBLIC_URL: "http://localhost:8055"
+    depends_on:
+      - db_postgres

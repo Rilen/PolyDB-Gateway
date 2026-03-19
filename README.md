@@ -65,6 +65,10 @@ flowchart TD
         Metrics[Coletor de Métricas]
     end
 
+    subgraph AdminLayer ["No-Code Admin Panel"]
+        CMS[Directus Headless CMS]
+    end
+
     subgraph Data ["Data Layer (Heterogênea)"]
         PG[(PostgreSQL)]
         MY[(MySQL)]
@@ -79,10 +83,13 @@ flowchart TD
     %% Fluxo de Gestão de Dados
     DataRole -- "Define Conexões (YAML)" --> Config
     DataRole -- "Monitora Performance" --> GR
+    DataRole -- "Gere Dados (Visual)" --> CMS
 
     %% Fluxo de Consumo
     Devs -- "Consultas via JSON" --> API
+    Devs -- "API REST / SDK" --> CMS
     Apps -- "Requisições API" --> API
+    Apps -- "Hooks / Webhooks" --> CMS
     
     %% Processamento Interno
     API --> Auth
@@ -91,6 +98,10 @@ flowchart TD
     Engine --> PG
     Engine --> MY
     Engine --> SQ
+
+    %% CMS Integration
+    CMS --> PG
+    CMS --> MY
     
     %% Fluxo de Métricas
     API --> Metrics
@@ -129,6 +140,7 @@ python api/gateway.py
 
 ### 5. Dashboards & API
 - **API Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Headless CMS (Directus):** [http://localhost:8055](http://localhost:8055) (Login: admin@example.com / admin)
 - **Métricas Brutas (Prometheus):** [http://localhost:9090](http://localhost:9090)
 - **Visualização (Grafana):** [http://localhost:3000](http://localhost:3000) (Login: admin/admin)
 
@@ -137,6 +149,7 @@ python api/gateway.py
 ## 🛠️ Tecnologias Utilizadas
 
 - **Backend:** Python 3.13+ com FastAPI.
+- **Admin Panel:** Directus (Headless CMS) para gestão visual de dados.
 - **Configuração:** YAML para gestão dinâmica de inventário de bancos.
 - **Monitoramento:** Prometheus Client para exportação de métricas.
 - **Infra:** Docker & Docker Compose para stack de bancos e monitoramento.

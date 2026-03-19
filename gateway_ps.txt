@@ -1,0 +1,1 @@
+rtl        21476  0.0  0.0 231440  2576 pts/7    S+   20:50   0:00 grep --color=auto gateway.py

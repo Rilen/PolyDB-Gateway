@@ -1,0 +1,1 @@
+/usr/bin/which: no docker-compose in (/home/rtl/.local/bin:/home/rtl/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/rtl/development/flutter/bin:/home/rtl/development/flutter/bin:/home/rtl/development/flutter/bin:/home/rtl/development/flutter/bin)
