@@ -1,253 +1,71 @@
-📄 PolyDB Gateway — Blueprint / Handover Summary
+📄 PolyDB Platform — Blueprint / Handover Summary (Simplified v1.1)
+
 1. Project Overview
 
-PolyDB Gateway is a lightweight API layer designed to provide unified and observable access to multiple relational databases.
-
-The platform abstracts database connections and query execution behind a standardized JSON API, enabling consistent access for applications and services.
+PolyDB is a unified data management platform using Directus Headless CMS to provide instant REST/GraphQL APIs and a visual administrative interface for multiple databases.
 
 Primary goals:
-
-simplify database integration
-
-centralize connection management
-
-standardize query responses
-
-provide observability and metrics
+- Eliminate redundant API wrappers (FastAPI removal)
+- Direct connection between Directus and Frontend
+- Automated API generation (REST/GraphQL)
+- RBAC (Role Based Access Control) out of the box
 
 2. System Architecture
 
-The system follows a layered architecture separating API access, query execution, and database connectivity.
+The system utilizes Directus as the core engine for data management and API delivery.
 
 High-level architecture:
-
 Clients
    ↓
-PolyDB Gateway API
+Directus API (REST/GraphQL)
    ↓
-Authentication Layer
+Internal Engine (Directus)
    ↓
-Connection Manager
-   ↓
-Query Engine
-   ↓
-Database Adapters
-   ↓
-Databases
+Target Databases (PostgreSQL / MySQL)
 
+3. Repository Structure
 
-Supported databases:
-
-MySQL
-
-PostgreSQL
-
-SQLite (local or testing)
-
-Observability stack:
-
-Prometheus (metrics collection)
-
-Grafana (monitoring dashboard)
-
-3. Core Components
-API Gateway
-
-Responsible for:
-
-receiving client requests
-
-validating input
-
-routing queries to the engine
-
-Expected interface:
-
-POST /query
-
-
-Payload example:
-
-{
-  "database": "postgres_prod",
-  "query": "SELECT * FROM users LIMIT 10"
-}
-
-Connection Manager
-
-Handles database connectivity through connection pooling.
-
-Responsibilities:
-
-manage open connections
-
-enforce limits
-
-optimize reuse of connections
-
-Query Engine
-
-Executes database queries and ensures output consistency.
-
-Responsibilities:
-
-validate queries
-
-execute SQL
-
-handle errors
-
-return standardized JSON responses
-
-Metrics Collector
-
-Collects runtime metrics for system observability.
-
-Metrics examples:
-
-query latency
-
-queries per second
-
-active connections
-
-error rate
-
-4. Data Flow
-
-Typical request flow:
-
-Client
-   ↓
-API Gateway
-   ↓
-Authentication
-   ↓
-Connection Manager
-   ↓
-Query Engine
-   ↓
-Database
-   ↓
-JSON Response
-
-5. Repository Structure
-
-Recommended repository layout:
-
-polydb-gateway
+poly-db-platform
 │
 ├── README.md
 │
 ├── docs
 │   ├── architecture.md
-│   ├── request-flow.md
-│   ├── presentation.md
 │   └── handover.md
-│
-├── api
-│   └── gateway.py
-│
-├── config
-│   └── databases.yaml
 │
 ├── docker
 │   └── docker-compose.yml
 │
-└── tests
+└── scripts
+    └── seed_presentation.py
 
-6. Configuration
+4. Configuration
 
-Database connections are defined through a configuration file.
+Directus is configured via environment variables in `docker/docker-compose.yml`. Databases are connected as "External Collections" or the primary database of the instance.
 
-Example:
+5. Deployment Strategy
 
-databases:
-  postgres_prod:
-    type: postgres
-    host: localhost
-    port: 5432
-    database: analytics
-    user: admin
-
-7. Security Considerations
-
-Future security implementations:
-
-API key authentication
-
-rate limiting
-
-query validation
-
-restricted query types
-
-role-based access control
-
-8. Deployment Strategy
-
-Suggested deployment architecture:
+The entire stack is containerized with Docker, facilitating deployment on any cloud provider or VPS.
 
 Client Apps
      ↓
-PolyDB Gateway
+Directus Engine
      ↓
-Container (Docker)
-     ↓
-Database Clusters
+Databases
 
-
-Optional infrastructure:
-
-Docker
-
-reverse proxy (NGINX)
-
-monitoring stack
-
-9. Future Improvements
-
-Planned roadmap features:
-
-query caching (Redis)
-
-query analytics
-
-GraphQL support
-
-automatic index recommendations
-
-distributed database support
-
-10. Handover Notes
+6. Handover Notes
 
 Project status:
-
-✔ architecture defined
-✔ documentation created
-✔ API blueprint prepared
+- FastAPI Gateway removed for simplification
+- Directus configured as primary API layer
+- Seeding scripts updated for direct DB connection
 
 Next steps:
-
-implement minimal API prototype
-
-integrate database connectors
-
-implement monitoring
-
-add authentication layer
+- Configure all external databases in Directus interface
+- Map roles/permissions for frontend applications
+- Integrate frontend using Directus SDK
 
 📌 Autor
-
 Rilen T. L.
-
-Focus areas:
-
-Data Engineering
-
-API Architecture
-
-Observability Platforms
-
-Rio das Ostras — RJ
+Platform Architecture
 2026

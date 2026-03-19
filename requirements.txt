@@ -1,8 +1,2 @@
-fastapi
-uvicorn[standard]
-pyyaml
 psycopg2-binary
 pymysql
-prometheus_client
-pydantic
-sqlalchemy

@@ -1,124 +1,75 @@
-# 🚀 PolyDB Gateway
+# 🚀 PolyDB Platform
 
-> **Camada de abstração e gateway unificado para acesso a múltiplos bancos de dados com observabilidade nativa.**
+> **Gerenciamento de dados unificado e observável através do Directus Headless CMS.**
 
-![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Directus](https://img.shields.io/badge/Directus-64D2FF?style=for-the-badge&logo=directus&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-00000f?style=for-the-badge&logo=mysql&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
 ---
 
 ## 📋 Visão Geral
 
-O **PolyDB Gateway** transforma bancos de dados complexos em componentes **"Plug and Play"**. Através de uma camada de abstração, ele permite que programadores consumam dados sem se preocupar com a infraestrutura, credenciais ou drivers específicos.
-
-Isso é o que chamamos de **"Data-as-a-Service"** (Dados como Serviço) 🚀.
+A **PolyDB Platform** simplifica o acesso a múltiplos bancos de dados utilizando o **Directus** como camada unificada. Reduzimos a complexidade eliminando wrappers customizados (como FastAPI), permitindo uma conexão direta entre o backend inteligente do Directus e o frontend.
 
 ### ✨ Diferenciais
-- **Acesso Unificado:** Uma única API para consultar PostgreSQL, MySQL e SQLite.
-- **Headless CMS (Directus):** Painel administrativo visual para gerenciar dados sem escrever SQL.
-- **Observabilidade:** Coleta distribuída de latência de query, erros e conexões ativas via Prometheus/Grafana.
-- **Interface Padronizada:** Respostas JSON consistentes para consumo via Web, Mobile ou Backend.
-- **Desacoplamento:** Camadas separadas para Dados, Gateway (API) e Consumidores (Apps).
+- **API Nativa Instantânea:** O Directus gera endpoints REST e GraphQL automaticamente para cada tabela.
+- **Autenticação Integrada:** Gestão de usuários, papéis e permissões (RBAC) pronta para uso.
+- **Zero Redundância:** Aproveita as funcionalidades nativas do Directus para CRUD, autenticação e gestão de arquivos.
+- **Observabilidade:** Monitoramento da infraestrutura via stack Prometheus/Grafana.
 
-### 💎 Por que Headless CMS?
-
-Utilizamos o **Directus** como nossa ferramenta principal de gestão visual. Ele permite:
-- **Zero Code Admin:** Gere usuários, tabelas e dados sem tocar no banco diretamente.
-- **JSON Instantâneo:** Cada nova tabela se torna um endpoint automático.
-- **Flexibilidade:** O Directus apenas "lê" seu banco original, mantendo a integridade.
-
-### 👥 Consumidores Suportados
-O Gateway e o CMS foram projetados para serem agnósticos:
-- **Web (React/Vue/JS):** Dashboards interativos via `fetch` API.
-- **Backend Legado (PHP/Go):** Integração via `cURL`.
-- **Ciência de Dados (Python):** Ingestão rápida para analíticos.
+### 👥 Fluxo Simplificado
+O **Programador** consome dados diretamente dos endpoints do Directus via `fetch` ou SDK oficial, enquanto o **Especialista de Dados** gerencia as fontes de informação visualmente.
 
 ---
 
-## 🔄 Rotina e Papel do Especialista de Dados
-
-Neste projeto, o **Cientista/Engenheiro de Dados** atua como o arquiteto da informação. O seu trabalho rotineiro utilizando o PolyDB Gateway envolve:
-
-1.  **Governança de Dados:** Definir no arquivo `databases.yaml` quais fontes de dados a empresa pode acessar com segurança.
-2.  **Monitoramento de Performance:** Usar o **Grafana** para identificar queries lentas (gargalos) que podem estar afetando a produção.
-3.  **Sanitização de Consultas:** Garantir que o Gateway esteja entregando JSONs limpos para que o **Programador** não precise tratar tipos de dados complexos de bancos antigos.
-4.  **Escalabilidade:** Configurar novos clusters e conectá-los ao Gateway sem que a aplicação final precise mudar uma única linha de código.
-
----
-
-## 🏗️ Arquitetura do Sistema
+## 🏗️ Arquitetura do Sistema [1.1]
 
 ```mermaid
 flowchart TD
-    subgraph Admins ["Gestão de Infraestrutura"]
-        DataRole[Engenheiro / Cientista / Analista de Dados]
+    subgraph Admins ["Gestão"]
+        DataRole[Engenheiro / Analista de Dados]
     end
 
-    subgraph Consumers ["Consumidores da API"]
-        Devs[Programadores / Analistas de Sistemas]
-        Apps[Aplicações / Microserviços]
+    subgraph Consumers ["Frontend / Clientes"]
+        Web[App React/Vue]
+        Mobile[App Mobile]
     end
 
-    subgraph Gateway ["PolyDB Gateway Instance"]
-        API[FastAPI Gateway]
-        Config[Configuração de Conexões]
-        Auth[Camada de Autenticação]
-        ConnMgr[Gerenciador de Conexões]
-        Engine[Engine de Query JSON]
-        Metrics[Coletor de Métricas]
+    subgraph Backend ["Camada API & Gestão (Headless CMS)"]
+        CMS[Directus Engine]
+        API[REST / GraphQL Endpoints]
+        Auth[Autenticação Nativa]
     end
 
-    subgraph AdminLayer ["No-Code Admin Panel"]
-        CMS[Directus Headless CMS]
-    end
-
-    subgraph Data ["Data Layer (Heterogênea)"]
+    subgraph Data ["Camada de Dados"]
         PG[(PostgreSQL)]
         MY[(MySQL)]
-        SQ[(SQLite Local)]
     end
 
-    subgraph Observability ["Stack de Observabilidade"]
+    subgraph Observability ["Métricas"]
         PR[Prometheus]
         GR[Grafana]
     end
 
-    %% Fluxo de Gestão de Dados
-    DataRole -- "Define Conexões (YAML)" --> Config
-    DataRole -- "Monitora Performance" --> GR
-    DataRole -- "Gere Dados (Visual)" --> CMS
-
-    %% Fluxo de Consumo
-    Devs -- "Consultas via JSON" --> API
-    Devs -- "API REST / SDK" --> CMS
-    Apps -- "Requisições API" --> API
-    Apps -- "Hooks / Webhooks" --> CMS
+    %% Fluxos
+    DataRole -- "Gere Dados" --> CMS
+    Web -- "Conexão Direta (JSON)" --> API
+    Mobile -- "Conexão Direta (JSON)" --> API
     
-    %% Processamento Interno
-    API --> Auth
-    Auth --> ConnMgr
-    ConnMgr --> Engine
-    Engine --> PG
-    Engine --> MY
-    Engine --> SQ
-
-    %% CMS Integration
-    CMS --> PG
-    CMS --> MY
+    CMS -- "Queries" --> PG
+    CMS -- "Queries" --> MY
     
-    %% Fluxo de Métricas
-    API --> Metrics
-    Metrics --> PR
-    PR --> GR
+    PR -- "Monitora" --> PG
+    PR -- "Monitora" --> MY
+    GR -- "Visualiza" --> PR
 ```
+
 
 ---
 
-## 🚀 Como Iniciar (Demonstração Local)
+## 🚀 Como Iniciar (Ambiente Simplificado)
 
 ### 1. Preparar o Ambiente
 ```powershell
@@ -129,27 +80,22 @@ pip install -r requirements.txt
 ```
 
 ### 2. Subir Infraestrutura (Docker)
+A infraestrutura agora é centrada no Directus, que gerencia os bancos e fornece a API.
 ```powershell
-# Inicia containers de Postgres, MySQL, Prometheus e Grafana
+# Inicia containers de Postgres, MySQL, Prometheus, Grafana e Directus
 docker compose -f docker/docker-compose.yml up -d
 ```
 
 ### 3. Popular Ecossistema de Dados
 ```powershell
-# Gera dados ricos em todos os bancos para apresentação
+# Gera dados nas tabelas para apresentação
 python scripts/seed_presentation.py
 ```
 
-### 4. Executar o Gateway
-```powershell
-python api/gateway.py
-```
-
-### 5. Dashboards & API
+### 4. Acesso ao Sistema
 | Serviço | URL | Credenciais |
 | :--- | :--- | :--- |
-| **API Docs (FastAPI)** | [http://localhost:8000/docs](http://localhost:8000/docs) | - |
-| **Headless CMS (Directus)** | [http://localhost:8055](http://localhost:8055) | `admin@example.com` / `admin` |
+| **API & Admin (Directus)** | [http://localhost:8055](http://localhost:8055) | `admin@example.com` / `admin` |
 | **Métricas (Prometheus)** | [http://localhost:9090](http://localhost:9090) | - |
 | **Visualização (Grafana)** | [http://localhost:3000](http://localhost:3000) | `admin` / `admin` |
 
@@ -157,19 +103,18 @@ python api/gateway.py
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Backend:** Python 3.13+ com FastAPI.
-- **Admin Panel:** Directus (Headless CMS) para gestão visual de dados.
-- **Configuração:** YAML para gestão dinâmica de inventário de bancos.
-- **Monitoramento:** Prometheus Client para exportação de métricas.
-- **Infra:** Docker & Docker Compose para stack de bancos e monitoramento.
+- **Admin Panel & API:** Directus (Headless CMS) para gestão visual de dados e endpoints automáticos.
+- **Bancos de Dados:** PostgreSQL e MySQL.
+- **Monitoramento:** Prometheus e Grafana para observabilidade da infraestrutura.
+- **Infra:** Docker & Docker Compose para orquestração da stack.
 
 ---
 
 ## 📄 Documentação Detalhada
 
-Links para documentos de apoio e blueprint:
-- [Arquitetura Completa](docs/architecture.md)
-- [Fluxo de Requisição](docs/request-flow.md)
+Links para documentos de apoio:
+- [Arquitetura Simplificada](docs/architecture.md)
+- [Plano de Simplificação](docs/simplification_plan.md)
 - [Resumo de Handover](docs/handover.md)
 
 ---
@@ -177,5 +122,5 @@ Links para documentos de apoio e blueprint:
 ## 📌 Autor
 
 **Rilen T. L.**  
-*Data Engineering & API Architecture*  
+*Data Engineering & Platform Architecture*  
 📍 Rio das Ostras — RJ

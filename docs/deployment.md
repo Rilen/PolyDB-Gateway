@@ -1,4 +1,4 @@
-## Deployment Architecture
+## Simplified Deployment Architecture (v1.1)
 
 ```mermaid
 flowchart TB
@@ -6,46 +6,20 @@ flowchart TB
 subgraph Clients
 A[Web Applications]
 B[Mobile Apps]
-C[Internal Systems]
 end
 
-subgraph API Layer
-D[PolyDB Gateway API]
-E[Auth Service]
-end
-
-subgraph Core Services
-F[Connection Pool Manager]
-G[Query Execution Engine]
-H[Response Formatter]
+subgraph API_Layer
+C[Directus Headless CMS]
 end
 
 subgraph Databases
-I[(MySQL Cluster)]
-J[(PostgreSQL Cluster)]
-K[(SQLite / Local DB)]
+D[(MySQL Cluster)]
+E[(PostgreSQL Cluster)]
 end
 
-subgraph Observability
-L[Metrics Collector]
-M[Prometheus]
-N[Grafana Dashboard]
-end
+A --> C
+B --> C
 
-A --> D
-B --> D
 C --> D
-
-D --> E
-D --> F
-
-F --> G
-G --> H
-
-G --> I
-G --> J
-G --> K
-
-D --> L
-L --> M
-M --> N
+C --> E
+```
