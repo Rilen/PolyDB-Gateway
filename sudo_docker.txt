@@ -1,1 +1,0 @@
-sudo: uma senha é necessária

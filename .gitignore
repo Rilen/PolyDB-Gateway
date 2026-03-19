@@ -6,6 +6,15 @@ venv/
 ENV/
 .env
 *.db
-.DS_Store
+# Debug and Logs
+*.txt
+*.log
+*.json
+!databases.yaml
+!docker-compose.yml
+!prometheus.yml
+
+# IDEs
 .vscode/
 .idea/
+.DS_Store

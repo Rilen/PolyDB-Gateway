@@ -19,16 +19,23 @@ Isso é o que chamamos de **"Data-as-a-Service"** (Dados como Serviço) 🚀.
 
 ### ✨ Diferenciais
 - **Acesso Unificado:** Uma única API para consultar PostgreSQL, MySQL e SQLite.
+- **Headless CMS (Directus):** Painel administrativo visual para gerenciar dados sem escrever SQL.
 - **Observabilidade:** Coleta distribuída de latência de query, erros e conexões ativas via Prometheus/Grafana.
-- **Interface Padronizada:** Respostas JSON consistentes, facilitando o consumo por diversas tecnologias.
-- **Desacoplamento:** Separação clara entre a Camada de Dados, o Gateway (API) e os Consumidores (Apps).
+- **Interface Padronizada:** Respostas JSON consistentes para consumo via Web, Mobile ou Backend.
+- **Desacoplamento:** Camadas separadas para Dados, Gateway (API) e Consumidores (Apps).
+
+### 💎 Por que Headless CMS?
+
+Utilizamos o **Directus** como nossa ferramenta principal de gestão visual. Ele permite:
+- **Zero Code Admin:** Gere usuários, tabelas e dados sem tocar no banco diretamente.
+- **JSON Instantâneo:** Cada nova tabela se torna um endpoint automático.
+- **Flexibilidade:** O Directus apenas "lê" seu banco original, mantendo a integridade.
 
 ### 👥 Consumidores Suportados
-O Gateway foi projetado para ser agnóstico, permitindo o consumo por:
-- **Web (HTML5/JS):** Dashboards interativos via `fetch` API.
-- **Backend Legado (PHP):** Integração simples via `cURL`.
-- **Scripts de Ciência de Dados (Python):** Automações robustas com a biblioteca `requests`.
-- **Aplicações Mobile:** Consumo via requisições HTTP padrão.
+O Gateway e o CMS foram projetados para serem agnósticos:
+- **Web (React/Vue/JS):** Dashboards interativos via `fetch` API.
+- **Backend Legado (PHP/Go):** Integração via `cURL`.
+- **Ciência de Dados (Python):** Ingestão rápida para analíticos.
 
 ---
 
@@ -139,10 +146,12 @@ python api/gateway.py
 ```
 
 ### 5. Dashboards & API
-- **API Docs (Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Headless CMS (Directus):** [http://localhost:8055](http://localhost:8055) (Login: admin@example.com / admin)
-- **Métricas Brutas (Prometheus):** [http://localhost:9090](http://localhost:9090)
-- **Visualização (Grafana):** [http://localhost:3000](http://localhost:3000) (Login: admin/admin)
+| Serviço | URL | Credenciais |
+| :--- | :--- | :--- |
+| **API Docs (FastAPI)** | [http://localhost:8000/docs](http://localhost:8000/docs) | - |
+| **Headless CMS (Directus)** | [http://localhost:8055](http://localhost:8055) | `admin@example.com` / `admin` |
+| **Métricas (Prometheus)** | [http://localhost:9090](http://localhost:9090) | - |
+| **Visualização (Grafana)** | [http://localhost:3000](http://localhost:3000) | `admin` / `admin` |
 
 ---
 

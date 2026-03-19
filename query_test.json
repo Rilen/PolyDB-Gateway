@@ -1,4 +1,0 @@
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   544  100   479  100    65  61663   8367 --:--:-- --:--:-- --:--:-- 77714
-{"database":"local_sqlite","rows_count":4,"data":[{"id":1,"action":"DB_CONNECT","user":"admin","severity":"INFO","timestamp":"2026-03-18 23:49:43"},{"id":2,"action":"QUERY_EXEC","user":"dev_user","severity":"INFO","timestamp":"2026-03-18 23:49:43"},{"id":3,"action":"AUTH_FAIL","user":"unknown","severity":"WARNING","timestamp":"2026-03-18 23:49:43"},{"id":4,"action":"CONFIG_UPDATE","user":"data_eng","severity":"CRITICAL","timestamp":"2026-03-18 23:49:43"}],"status":"success"}
