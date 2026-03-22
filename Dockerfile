@@ -1,41 +1,53 @@
 # ==============================================================================
-# 🐋 DOCKERFILE: OTIMIZADO PARA ENGENHARIA DE DADOS & IA
+# 🐋 DOCKERFILE: POLYDB-GATEWAY (SRE ELITE EDITION)
 # ==============================================================================
 # Maintainer: Rilen T. L. - DataScience
-# Base: Python 3.11-slim (Estabilidade e Segurança)
+# Base: Python 3.11-slim (Security Focused)
+# ==============================================================================
 
 FROM python:3.11-slim
 
 LABEL Maintainer="Rilen T. L. - DataScience"
+LABEL Project="PolyDB-Gateway"
+LABEL Tier="Data Infrastructure"
 
-# --- 1. CONFIGURAÇÕES DE RUNTIME (PERFORMANCE Python em Docker) ---
-# Evita a criação de arquivos de bytecode (.pyc) que sugam espaço
+# --- 1. RUNTIME CONFIG (Python optimization) ---
 ENV PYTHONDONTWRITEBYTECODE=1
-# Garante que as mensagens de log sejam enviadas em tempo real (sem buffer)
 ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
 
-# --- 2. DEPÓSITOS DE SISTEMA & COMPILAÇÃO ---
-# libpq-dev: Conectividade Nativa com PostgreSQL
-# build-essential: Compilação de drivers e pacotes DS/ML (ex: NumPy)
+# --- 2. SYSTEM DEPENDENCIES ---
+# libpq-dev: Native PostgreSQL connectivity
+# default-libmysqlclient-dev: Native MySQL connectivity (optimized)
+# build-essential: Necessary for compiling some DS/ML packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    default-libmysqlclient-dev \
+    pkg-config \
+    curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# --- 3. GESTÃO DE DEPENDÊNCIAS DE APLICAÇÃO ---
+# --- 3. APPLICATION WORKDIR ---
 WORKDIR /app
+
+# --- 4. DEPENDENCY MANAGEMENT ---
 COPY requirements.txt .
 
-# Instalação com limpeza imediata de cache de pacotes PIP (Reduz Imagem em 40%+)
+# PIP Optimization: --no-cache-dir and --upgrade pip
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# --- 4. CÓDIGO FONTE & SEGURANÇA ---
-# NOTA SRE: A pasta SEG/ e o .env são IMEDIATAMENTE bloqueados via .dockerignore
-# A injeção de segredos deve ocorrer via Volumes no Docker Compose (Zero Trust)
+# --- 5. SOURCE CODE & DATA HYGIENE ---
+# O .dockerignore garante que SEG/, .git e logs não entrem na imagem
 COPY scripts/ ./scripts/
 COPY data/ ./data/
 
-# --- 5. EXECUÇÃO (PIPELINE DE DADOS) ---
-# O seeder atua como o ponto de entrada principal para garantir integridade.
+# --- 6. SECURITY: NON-ROOT USER (Best Practice) ---
+RUN useradd -m polydb_user && \
+    chown -R polydb_user:polydb_user /app
+USER polydb_user
+
+# --- 7. EXECUTION (Entrypoint focus) ---
+# O container atua como um seeder/pipeline resiliente
 CMD ["python", "scripts/seed_presentation.py"]

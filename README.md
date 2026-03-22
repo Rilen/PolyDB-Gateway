@@ -26,26 +26,31 @@ Em ambientes de Data Science e Software moderno, o acesso a dados de fontes lega
 
 ## 🧠 Expertise & Skillset
 
-### 🤝 Liderança Estratégica & Soft Skills
-![Stakeholder Management](https://img.shields.io/badge/Stakeholder_Management-Expert-brightgreen)
-![Product Vision](https://img.shields.io/badge/Product_Vision-Strategic-blue)
-![Risk Mitigation](https://img.shields.io/badge/Risk_Mitigation-High-orange)
+### 🤝 Soft Skills & Liderança Estratégica
+| Atributo | Nível | Descrição |
+| :--- | :--- | :--- |
+| ![Stakeholder Management](https://img.shields.io/badge/Stakeholder_Management-Expert-brightgreen) | **Master** | Gestão de expectativas e alinhamento técnico/comercial. |
+| ![Product Vision](https://img.shields.io/badge/Product_Vision-Strategic-blue) | **Sênior** | Design de sistemas com foco em escala e usabilidade de dados. |
+| ![Risk Mitigation](https://img.shields.io/badge/Risk_Mitigation-High-orange) | **Líder** | Identificação proativa de gargalos de segurança e performance. |
 
 ### ⚒️ Hard Skills (Expertise Técnica Sênior)
-![Data Engineering](https://img.shields.io/badge/Data_Engineering-Senior-red)
-![Zero Trust Security](https://img.shields.io/badge/Zero--Trust_Security-Protocols-lightgrey)
-![SOLID & Clean Code](https://img.shields.io/badge/SOLID_/_Clean_Code-Compliance-yellowgreen)
-
----
-
-## 🛠️ Stack Tecnológica
-
-| Camada | Tecnologia | Status |
+| Tecnologia | Expertise | Aplicação neste Projeto |
 | :--- | :--- | :--- |
-| **API & Admin** | ![Directus](https://img.shields.io/badge/Directus-64D2FF?style=flat&logo=directus&logoColor=white) | **Ativo** |
-| **Bancos de Dados** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-00000f?style=flat&logo=mysql&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-07405E?style=flat&logo=sqlite&logoColor=white) | **Integrado** |
-| **Observabilidade** | ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat&logo=prometheus&logoColor=white) ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white) | **Métricas Reais** |
-| **Containers** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) ![Compose](https://img.shields.io/badge/Compose-2496ED?style=flat&logo=docker&logoColor=white) | **DevOps Ready** |
+| ![Data Engineering](https://img.shields.io/badge/Data_Engineering-Senior-red) | **Sênior** | Pipelines de ETL, Modelagem de dados e Seeding. |
+| ![Zero Trust Security](https://img.shields.io/badge/Zero--Trust_Security-Protocols-lightgrey) | **Expert** | Isolamento de segredos via Volumes e .dockerignore. |
+| ![SOLID & Clean Code](https://img.shields.io/badge/SOLID_/_Clean_Code-Compliance-yellowgreen) | **Sênior** | Estruturação modular e código legível/sustentável. |
+
+### 🛠️ Stack Tecnológica
+| Camada | Tecnologia | Badge |
+| :--- | :--- | :--- |
+| **API & Admin** | Directus | ![Directus](https://img.shields.io/badge/Directus-64D2FF?style=flat-square&logo=directus&logoColor=white) |
+| **Bancos de Dados** | PostgreSQL | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white) |
+| **Bancos de Dados** | MySQL | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) |
+| **Bancos de Dados** | SQLite | ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white) |
+| **Monitoramento** | Prometheus | ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat-square&logo=prometheus&logoColor=white) |
+| **Visualização** | Grafana | ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat-square&logo=grafana&logoColor=white) |
+| **DevOps** | Docker | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) |
+| **Scripts** | Python | ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) |
 
 ---
 
@@ -53,28 +58,29 @@ Em ambientes de Data Science e Software moderno, o acesso a dados de fontes lega
 
 ```mermaid
 flowchart LR
-    subgraph Ingestao ["1. Ingestão (ETL)"]
+    subgraph Ingestao ["1. Ingestão (Resiliência)"]
         S[python: seeder] --> PG[(PostgreSQL)]
         S --> MY[(MySQL)]
         S --> SL[(SQLite)]
     end
 
-    subgraph Governança ["2. Unificação (Directus)"]
+    subgraph Unificacao ["2. Gateway (Directus)"]
         PG --> D[Directus Layer]
         MY --> D
         SL --> D
-        D -- "RBAC / Auth" --> API[API REST/GraphQL]
+        D -- "RBAC / JWT / GraphQL" --> API[API Unificada]
     end
 
-    subgraph Output ["3. Dashboards & AI"]
+    subgraph Consumo ["3. Data Consumers"]
         API --> DS[Data Science / ML]
-        API --> Web[App React/Vue]
+        API --> BI[PowerBI / Metabase]
+        API --> App[Web/Mobile Apps]
     end
 
-    subgraph Monitoramento ["4. SRE"]
-        PR[Prometheus] -- "DB Scrapes" --> PG
-        PR -- "DB Scrapes" --> MY
-        GR[Grafana] -- "Visualiza" --> PR
+    subgraph Observabilidade ["4. SRE & Health"]
+        PR[Prometheus] -- "Scrapes" --> PG
+        PR -- "Scrapes" --> MY
+        GR[Grafana] -- "Dashboard" --> PR
     end
 ```
 
@@ -84,37 +90,45 @@ flowchart LR
 
 O projeto foi construído sob os pilares do **Clean Code** e **SOLID**. 
 -   **Princípio da Responsabilidade Única (SRP)**: Cada container possui uma missão clara: banco de dados, gateway de acesso ou seeder de dados.
--   **Arquitetura de Pastas Sênior**: Separação clara entre scripts de ingestão (`scripts/`), configurações de infra (`docker/`) e o cofre de segredos (`SEG/`). 
+-   **Segregação de Interface**: O Directus atua como o único ponto de verdade para as aplicações externas, isolando os bancos legados.
+-   **Injeção de Dependência**: Todas as variáveis de configuração são injetadas em tempo de execução via ambiente, nunca hardcoded.
 
 ---
 
 ## 🔐 Protocolo de Segurança & "Carrego"
 
 ### 🏺 O Cofre Local (SEG/)
-O sistema utiliza o conceito de **Cofre Físico (Vault)**. A pasta `SEG/` contém todos os segredos críticos.
--   **Como levar para outro PC**:
-    1.  Mova a pasta `SEG/` manualmente via hardware (pendrive encriptado) ou vault digital privado.
-    2.  NUNCA adicione esta pasta ao Git.
-    3.  A presença física da pasta `SEG/` é o que valida o "Procedimento de Carrego" seguro.
+O sistema utiliza o conceito de **Zero Trust**. A pasta `SEG/` é o cofre local que **NUNCA** sobe para a nuvem.
+-   **"Carrego" Seguro**: Para levar o projeto para outro PC, mova a pasta `SEG/` manualmente (pendrive ou vault de senhas).
+-   **Setup Local**:
+    1.  Provisione a pasta `SEG/` na raiz do projeto.
+    2.  Crie o arquivo `.env` dentro de `SEG/` baseando-se no `.env.example`.
+    3.  O Docker Compose irá mapear `./SEG/.env` para `/app/.env` dentro dos containers.
 
-### ⚙️ Setup Local
-1.  **Provisionamento**: Crie o arquivo `SEG/.env` (use o `SEG/.env.example` como guia).
-2.  **Injeção**: O Docker Compose mapeia automaticamente `./SEG/.env` para dentro dos containers, garantindo que nenhum segredo seja "hardcoded" na imagem final.
+---
+
+## 🛠️ Troubleshooting & Requisitos
+
+### Requisitos de Hardware (Recomendado)
+- **RAM**: Mínimo 4GB (Ideal 8GB para datasets extensos).
+- **CPU**: 2 vCPUs (x86_64).
+- **Storage**: SSD com pelo menos 5GB livres para volumes persistentes.
+
+### Erros Comuns
+- **Erro de Porta**: Se as portas 3200, 3201 ou 3202 estiverem ocupadas, altere os valores em `SEG/.env`.
+- **Falha no DB Connection**: Certifique-se de que os containers de DB estão saudáveis (`healthy`) antes de depurar o `seeder`.
+- **Permissão de Volume**: No Linux, garanta que a pasta `data/` tenha permissões de escrita para o usuário do container.
 
 ---
 
 ## 🚀 How To
 
-Execute toda a stack (Bancos + Gateway + Observabilidade + Seeding) com um único comando:
-
-```powershell
-docker compose up -d
-```
-
-### Portas do Ecossistema:
-- **Directus Admin**: [http://localhost:3200](http://localhost:3200) (`admin@example.com` / `admin`)
-- **Grafana Metrics**: [http://localhost:3201](http://localhost:3201) (`admin` / `admin`)
-- **Prometheus**: [http://localhost:3202](http://localhost:3202)
+1.  **Prepare o Cofre**: `cp SEG/.env.example SEG/.env` e ajuste as credenciais.
+2.  **Inicie a Stack**:
+    ```powershell
+    docker compose up -d --build
+    ```
+3.  **Acesse o Admin**: [http://localhost:3200](http://localhost:3200) (User configurado no `.env`).
 
 ---
 
@@ -122,16 +136,18 @@ docker compose up -d
 
 ```text
 📂 PolyDB-Gateway
-├── 📂 SEG/                # 🔐 Vault de Segurança (Chaves e Segredos)
-├── 📂 api/                # Lógica de integração e endpoints complementares
-├── 📂 data/               # Bancos locais persistentes (SQLite/Models)
-├── 📂 docker/             # Configurações de serviços de infraestrutura
-├── 📂 docs/               # Documentação técnica e arquitetural
-├── 📂 scripts/            # Pipelines de ETL e Seeding de Dados
-├── 📄 .dockerignore       # Otimização de build
+├── 📂 SEG/                # 🔐 Vault de Segurança (NUNCA VERSIONADO)
+│   ├── 📄 .env.example    # Template de Segredos
+│   └── 📄 README_SEG.md   # Manual do Cofre
+├── 📂 api/                # Lógica complementar e utilitários
+├── 📂 data/               # Persistent Volumes (SQLite / Databases)
+├── 📂 docker/             # Infra (Configurações de Monitoring)
+├── 📂 docs/               # Technical Documentation
+├── 📂 scripts/            # Python ETL / Seeding Pipelines
+├── 📄 .dockerignore       # Protocolo SRE (Security First)
 ├── 📄 .gitignore          # Protocolo de Governança
-├── 📄 docker-compose.yml  # Orquestração de Alta Performance
-└── 📄 Dockerfile          # Imagem de Dados Otimizada (Maintainer Rilen T. L.)
+├── 📄 docker-compose.yml  # Orquestração Master
+└── 📄 Dockerfile          # Imagem de Dados Otimizada
 ```
 
 ---
