@@ -121,6 +121,20 @@ O sistema utiliza o conceito de **Zero Trust**. A pasta `SEG/` é o cofre local 
 
 ---
 
+## 🚀 Menu de Acesso (Service Hub)
+
+Para facilitar a gestão e visualização dos dados, utilize o hub oficial de acesso:
+
+| Serviço | Link de Acesso | Porta | Função |
+| :--- | :--- | :--- | :--- |
+| **Directus Gateway** | [http://localhost:3200](http://localhost:3200) | `3200:8055` | Gestão de Dados & API Unificada |
+| **Grafana Dashboard** | [http://localhost:3201](http://localhost:3201) | `3201:3000` | Painéis e Métricas de Negócio |
+| **Prometheus Monitor** | [http://localhost:3202](http://localhost:3202) | `3202:9090` | Observabilidade e Motor SRE |
+| **PostgreSQL Core** | `localhost:5432` | `5432:5432`| Banco de Analytics Central |
+| **MySQL Inventory** | `localhost:3306` | `3306:3306`| Sistema de Legado Mapeado |
+
+---
+
 ## 🚀 How To
 
 1.  **Prepare o Cofre**: `cp SEG/.env.example SEG/.env` e ajuste as credenciais.
@@ -128,7 +142,8 @@ O sistema utiliza o conceito de **Zero Trust**. A pasta `SEG/` é o cofre local 
     ```powershell
     docker compose up -d --build
     ```
-3.  **Acesse o Admin**: [http://localhost:3200](http://localhost:3200) (User configurado no `.env`).
+3.  **Utilize o Menu**: Utilize a tabela de "Menu de Acesso" acima para navegar pelos serviços.
+
 
 ---
 
