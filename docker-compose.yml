@@ -1,0 +1,169 @@
+# ==============================================================================
+# 🐋 DOCKER-COMPOSE: ORQUESTRAÇÃO DE DADOS, SEGURANÇA & PERSISTÊNCIA
+# ==============================================================================
+# Desenvolvido para máximo portabilidade (Carrego) e Isolamento de Segredos.
+
+services:
+  # 🌐 Banco Central de Analytics (PostgreSQL)
+  db_postgres:
+    image: postgres:15
+    container_name: polydb-postgres
+    restart: always
+    env_file: ./SEG/.env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - polydb-net
+
+  # 🛠️ Banco de Inventário (MySQL 8)
+  db_mysql:
+    image: mysql:8
+    container_name: polydb-mysql
+    restart: always
+    env_file: ./SEG/.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - polydb-net
+
+  # 🚀 API Gateway & Dashboard (Directus CMS)
+  directus:
+    image: directus/directus:11
+    container_name: polydb-directus
+    restart: always
+    env_file: ./SEG/.env
+    ports:
+      - "${DIRECTUS_PORT:-3200}:8055"
+    environment:
+      KEY: ${DIRECTUS_KEY}
+      SECRET: ${DIRECTUS_SECRET}
+      DB_CLIENT: "pg"
+      DB_HOST: "db_postgres"
+      DB_PORT: "5432"
+      DB_DATABASE: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+      PUBLIC_URL: "http://localhost:${DIRECTUS_PORT:-3200}"
+      METRICS_ENABLED: "true"
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+    networks:
+      - polydb-net
+
+  # 📊 Camada de Observabilidade (Prometheus Stack)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: polydb-prometheus
+    restart: always
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "${PROMETHEUS_PORT:-3202}:9090"
+    networks:
+      - polydb-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: polydb-grafana
+    restart: always
+    env_file: ./SEG/.env
+    ports:
+      - "${GRAFANA_PORT:-3201}:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
+    networks:
+      - polydb-net
+
+  # 📈 Exporters para Métricas Reais
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: polydb-postgres-exporter
+    env_file: ./SEG/.env
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_postgres:5432/${POSTGRES_DB}?sslmode=disable"
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+    networks:
+      - polydb-net
+
+  mysql_exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: polydb-mysql-exporter
+    env_file: ./SEG/.env
+    environment:
+      DATA_SOURCE_NAME: "${MYSQL_USER}:${MYSQL_PASSWORD}@(db_mysql:3306)/"
+    depends_on:
+      db_mysql:
+        condition: service_healthy
+    networks:
+      - polydb-net
+
+  # 🧠 Application Pipeline (ETL & Seeder)
+  # Este container simula as pipelines de ingestão de Data Science
+  seeder:
+    build: .
+    container_name: polydb-seeder
+    env_file: ./SEG/.env
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+      POSTGRES_HOST: db_postgres
+      MYSQL_HOST: db_mysql
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DATABASE}
+      SQLITE_PATH: ${SQLITE_PATH}
+    depends_on:
+      db_postgres:
+        condition: service_healthy
+      db_mysql:
+        condition: service_healthy
+    volumes:
+      # MAPEAMENTO DE PERSISTÊNCIA (Data Science Outputs)
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./outputs:/app/outputs
+      - ./SEG:/app/SEG:ro        # Mapeamento do Cofre Local (Vault)
+      - ./SEG/.env:/app/.env:ro  # Mapeamento Direto do Arquivo de Segredos
+    networks:
+      - polydb-net
+
+networks:
+  polydb-net:
+    driver: bridge
+
+volumes:
+  pg_data:
+  mysql_data:

@@ -3,11 +3,27 @@ import pymysql
 import sqlite3
 import random
 import time
+import os
 from datetime import datetime, timedelta
+
+# Database Connection Settings from Environment Variables
+PG_HOST = os.getenv("POSTGRES_HOST", "localhost")
+PG_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
+PG_USER = os.getenv("POSTGRES_USER", "admin")
+PG_PASS = os.getenv("POSTGRES_PASSWORD", "password")
+PG_DB   = os.getenv("POSTGRES_DB", "analytics")
+
+MY_HOST = os.getenv("MYSQL_HOST", "localhost")
+MY_PORT = int(os.getenv("MYSQL_PORT", "3306"))
+MY_USER = os.getenv("MYSQL_USER", "user")
+MY_PASS = os.getenv("MYSQL_PASSWORD", "password")
+MY_DB   = os.getenv("MYSQL_DB", "inventory")
+
+SQLITE_PATH = os.getenv("SQLITE_PATH", "data/local.db")
 
 def seed_postgres():
     try:
-        conn = psycopg2.connect(host="localhost", port=5432, user="admin", password="password", database="analytics")
+        conn = psycopg2.connect(host=PG_HOST, port=PG_PORT, user=PG_USER, password=PG_PASS, database=PG_DB)
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS sales")
         cursor.execute("""
@@ -33,13 +49,13 @@ def seed_postgres():
         conn.commit()
         cursor.close()
         conn.close()
-        print("✅ PostgreSQL: Tabela 'sales' populada com 20 registros variados.")
+        print(f"✅ PostgreSQL ({PG_HOST}): Tabela 'sales' populada com 20 registros variados.")
     except Exception as e:
         print(f"❌ Erro PostgreSQL: {e}")
 
 def seed_mysql():
     try:
-        conn = pymysql.connect(host="localhost", port=3306, user="user", password="password", database="inventory")
+        conn = pymysql.connect(host=MY_HOST, port=MY_PORT, user=MY_USER, password=MY_PASS, database=MY_DB)
         with conn.cursor() as cursor:
             cursor.execute("DROP TABLE IF EXISTS devices")
             cursor.execute("""
@@ -62,14 +78,15 @@ def seed_mysql():
             cursor.executemany("INSERT INTO devices (device_name, status, load_percentage) VALUES (%s, %s, %s)", data)
         conn.commit()
         conn.close()
-        print("✅ MySQL: Tabela 'devices' populada com status de infraestrutura.")
+        print(f"✅ MySQL ({MY_HOST}): Tabela 'devices' populada com status de infraestrutura.")
     except Exception as e:
         print(f"❌ Erro MySQL: {e}")
 
 def seed_sqlite():
     try:
-        path = 'data/local.db'
-        conn = sqlite3.connect(path)
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(SQLITE_PATH), exist_ok=True)
+        conn = sqlite3.connect(SQLITE_PATH)
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS audit_logs")
         cursor.execute("""
@@ -91,13 +108,27 @@ def seed_sqlite():
         cursor.executemany("INSERT INTO audit_logs (action, user, severity) VALUES (?, ?, ?)", logs)
         conn.commit()
         conn.close()
-        print(f"✅ SQLite: Tabela 'audit_logs' populada em {path}.")
+        print(f"✅ SQLite: Tabela 'audit_logs' populada em {SQLITE_PATH}.")
     except Exception as e:
         print(f"❌ Erro SQLite: {e}")
 
 if __name__ == "__main__":
     print("🚀 Populando ecossistema de dados para apresentação...")
-    seed_postgres()
-    seed_mysql()
-    seed_sqlite()
-    print("✨ Tudo pronto para os prints!")
+    
+    # Simple retry logic for Docker network startup
+    max_retries = 5
+    for i in range(max_retries):
+        try:
+            seed_postgres()
+            seed_mysql()
+            seed_sqlite()
+            break
+        except Exception as e:
+            if i < max_retries - 1:
+                print(f"Retrying in 5 seconds... ({i+1}/{max_retries})")
+                time.sleep(5)
+            else:
+                print("Failed to seed databases after several retries.")
+
+    print("✨ Processo de seeding finalizado.")
+

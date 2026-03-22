@@ -1,0 +1,60 @@
+# ==============================================================================
+# 🐋 .dockerignore: Otimização de Build & Segurança SRE
+# ==============================================================================
+
+# 🛑 1. SEGURANÇA (PROIBIDO VERSIONAR CRÍTICO)
+SEG/
+seg/
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# 🛑 2. GIT & VERSIONAMENTO
+.git
+.gitignore
+.gitattributes
+
+# 🐍 3. PYTHON CACHES & ENVS
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+.pytest_cache/
+.coverage
+htmlcov/
+.nox/
+.tox/
+
+# 📊 4. DATA & LOGS (Persistidos via Volume)
+data/
+docker/data/
+*.log
+*.sqlite
+*.db
+*.csv
+*.parquet
+*.parquet.gzip
+*.jsonl
+
+# 🖥️ 5. IDEs & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode.history/
+
+# 📄 6. DOCUMENTAÇÃO (Basta o README na imagem final)
+docs/
+*.md
+!README.md
+LICENSE
+tests/
+examples/
+AULAS.md
