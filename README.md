@@ -57,9 +57,9 @@ Em ambientes de Data Science e Software moderno, o acesso a dados de fontes lega
 ## 📊 Fluxo de Dados & Inovação
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph Ingestao ["1. Ingestão (Resiliência)"]
-        S[python: seeder] --> PG[(PostgreSQL)]
+        S[DEV] --> PG[(PostgreSQL)]
         S --> MY[(MySQL)]
         S --> SL[(SQLite)]
     end
@@ -73,14 +73,14 @@ flowchart LR
 
     subgraph Consumo ["3. Data Consumers"]
         API --> DS[Data Science / ML]
-        API --> BI[PowerBI / Metabase]
-        API --> App[Web/Mobile Apps]
+        API --> BI[BI/AI/LLM]
+        API --> DEV[Agent/Backend/Frontend]
     end
 
     subgraph Observabilidade ["4. SRE & Health"]
         PR[Prometheus] -- "Scrapes" --> PG
         PR -- "Scrapes" --> MY
-        GR[Grafana] -- "Dashboard" --> PR
+        GR[Monitoramento] -- "Dashboard" --> PR
     end
 ```
 
